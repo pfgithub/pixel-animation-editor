@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Index</title>
+    <style type="text/css">
+      canvas{
+            image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
+    image-rendering: -moz-crisp-edges;          /* Firefox                        */
+    image-rendering: -o-crisp-edges;            /* Opera                          */
+    image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+    image-rendering: pixelated; /* Chrome */
+    image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
+    -ms-interpolation-mode: nearest-neighbor;   /* IE8+                           */
+      }
+      #mini {
+        transform: scale(5.0);
+        transform-origin: 0% 100%;
+        opacity: 0.8;
+        background-color: #fff;
+        position:absolute;
+        transition: 0.1s opacity, 0.1s width;
+        
+        pointer-events: none;
+      }
+      #bdiv{
+        position: fixed;
+        top:0;
+        left:0;
+      }
+      button, span{
+        float: left;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="main" style="position: fixed; top: 0; left: 0; width:100%;height:100%;" width="9" height="9">Your browser does not support the canvas element</canvas>
+    <canvas id="mini" style="position: absolute; bottom: 0; left: 0; border: 1px solid #000;" width="9" height="9">Your browser does not support the canvas element</canvas>
+    <div id="bdiv">
+      <button id="insert" hotkey="KeyQ">Insert Frame</button>
+      <button id="copy" hotkey="KeyE">Copy Frame</button>
+      <button id="deletf" hotkey="Delete">Delete Frame</button>
+      <button id="left" hotkey="ArrowLeft">&lt;</button>
+      <span id="current"></span>
+      <button id="right" hotkey="ArrowRight">&gt;</button>
+      <button id="drawerase" hotkey="KeyW">Draw (click to toggle)</button>
+      <button id="export" hotkey="KeyP">download.pattern.json</button>
+      <button id="exportText" hotkey="KeyO">copy.txt.cpp</button>
+      <button id="exportTextDnl" hotkey="KeyI">download.txt.cpp</button>
+      <button id="play" hotkey="Enter">Play</button>
+      <input type="number" placeholder="Play Speed" value="100" id="playSpeed" />
+    </div>
+    <script type="text/javascript" src="arduinofile.cpp.js"></script>
+    <script type="text/javascript" src="arduinoexporter.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+  </body>
+</html>
