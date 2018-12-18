@@ -1,5 +1,5 @@
 // canvas
-/* global document, window, arduinoExporter */
+/* global document, window, arduinoExporter, v5Export */
 
 let frames = [];
 let currentFrame = -1;
@@ -223,6 +223,7 @@ function done(){
 }
 document.getElementById("exportText").addEventListener("click", () => doneText());
 document.getElementById("exportTextDnl").addEventListener("click", () => doneTextDnl());
+document.getElementById("exportv5").addEventListener("click", () => doneTextv5());
 function doneText(){
   let resarr = [];
   frames.forEach(frame => {
@@ -230,6 +231,14 @@ function doneText(){
   });
   //window.prompt("ctrl+c", JSON.stringify(resarr));
   download("", arduinoExporter(resarr), true);
+}
+function doneTextv5(){
+  let resarr = [];
+  frames.forEach(frame => {
+    resarr.push(frame ? frame.data : []);
+  });
+  //window.prompt("ctrl+c", JSON.stringify(resarr));
+  download("", v5Export(resarr, WIDTH, HEIGHT), true);
 }
 function doneTextDnl(){
   let resarr = [];
