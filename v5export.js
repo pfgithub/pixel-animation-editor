@@ -28,11 +28,11 @@ function v5Export(data, width, height) {
       return `{ ${row.map(i=>i?"true":"false").join`, `} }`;
     });
     return `
-  delay(patternPlaybackSpeed);
   states = new boolean[][]{
     ${rowdata.join`,\n    `}
   };
   pushStates();
+  delay(patternPlaybackSpeed);
     `;
   });
   return fulldata.join`\n`.split`\n`.join``.split` `.join``.split`newboolean`.join`new boolean`;
