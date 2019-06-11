@@ -6,6 +6,13 @@
   "author": "pfg <omegariisthebest@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "prettier": "^1.18.2"
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
+    "eslint": "^5.16.0",
+    "prettier": "^1.18.2",
+    "typescript": "^3.5.1"
+  },
+  "scripts": {
+    "build": "tsc ; cp index.html docs ; echo 'animationeditor.pfg.pw' > docs/CNAME"
   }
 }

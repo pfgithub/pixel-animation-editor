@@ -1,11 +1,10 @@
-
 //const input = require("./dnl.pattern.json");
 
-arduinoExporter = (input) => {
-  const allPixels = [];
-  const frames = [];
-  
-  function posconverter(x, y){
+const arduinoExporter = (input: boolean[][][]) => {
+  const allPixels: any = [];
+  const frames: any = [];
+
+  function posconverter(x: any, y: any) {
     //0                   5
     // 10[g r b] 11[g r b]
     //  8[g r b] 9[g r b]
@@ -14,76 +13,82 @@ arduinoExporter = (input) => {
     //  2[g r b] 3[g r b]
     //  0[g r b] 1[g r b]
     //5
-    let side = Math.floor(x/3);
-    let colorStart = x%3; // 0=g 1=r 2=b
-    let posStart = (5-y)*2;
+    const side = Math.floor(x / 3);
+    const colorStart = x % 3; // 0=g 1=r 2=b
+    const posStart = (5 - y) * 2;
     return [
-      posStart+ side,
+      posStart + side,
       [
-        colorStart == 1 ? "255" : 0,
-        colorStart == 0 ? "255" : 0,
-        colorStart == 2 ? "255" : 0
+        colorStart === 1 ? "255" : 0,
+        colorStart === 0 ? "255" : 0,
+        colorStart === 2 ? "255" : 0
       ]
     ];
   }
-  
-  function mergePosArrays(pos1, pos2){
-    if(!pos1 || !pos2) return pos1 || pos2;
-    return [
-      pos1[0] || pos2[0],
-      pos1[1] || pos2[1],
-      pos1[2] || pos2[2]
-    ];
+
+  function mergePosArrays(pos1: any, pos2: any) {
+    if (!pos1 || !pos2) {
+      return pos1 || pos2;
+    }
+    return [pos1[0] || pos2[0], pos1[1] || pos2[1], pos1[2] || pos2[2]];
   }
-  
+
   /*for(let x = 0; x < 6; x++){
     for(let y = 0; y < 6; y++){
       console.log(x, y, posconverter(x, y));
     }
   }*/
-  
+
   input.forEach((arr, frame) => {
     // arr is 2d array containing pixels
-    if(!frames[frame])frames[frame]={};
-    if(arr) arr.forEach((line, y) => {
-      if(line) line.forEach((val, x) => {
-        val = !!val;
-        if(!val) return;
-        let rgbpos = posconverter(x, y);
-        frames[frame][rgbpos[0]] = mergePosArrays(frames[frame][rgbpos[0]], rgbpos[1]);
-        allPixels[rgbpos[0]] = true;
+    if (!frames[frame]) {
+      frames[frame] = {};
+    }
+    if (arr) {
+      arr.forEach((line, y) => {
+        if (line) {
+          line.forEach((val, x) => {
+            val = !!val;
+            if (!val) {
+              return;
+            }
+            const rgbpos = posconverter(x, y);
+            frames[frame][+rgbpos[0]] = mergePosArrays(
+              frames[frame][+rgbpos[0]],
+              rgbpos[1]
+            );
+            allPixels[+rgbpos[0]] = true;
+          });
+        }
       });
-    });
+    }
   });
-  
-  function genSets(){
+
+  function genSets() {
     let res = "";
-    frames.forEach((frame, i) => {
-      res += (`  case ${i}:\n`);
-      Object.keys(frame).forEach((key) => {
+    frames.forEach((frame: any, i: number) => {
+      res += `  case ${i}:\n`;
+      Object.keys(frame).forEach(key => {
         const val = frame[key];
-        res += (`    strip.setPixelColor(${key}, ${val.join(", ")});\n`);
+        res += `    strip.setPixelColor(${key}, ${val.join(", ")});\n`;
       });
-      res += (`    strip.show();\n      break;\n`);
+      res += `    strip.show();\n      break;\n`;
     });
-    return (
-  `  switch (t) {
-  ${res}  }\n`
-    );
+    return `  switch (t) {
+  ${res}  }\n`;
   }
-  
-  function genResets(){
+
+  function genResets() {
     let res = "";
-    allPixels.forEach((pixel, i) => {
-      res += (`    strip.setPixelColor(${i}, Black);\n`);
+    allPixels.forEach((_pixel: any, i: number) => {
+      res += `    strip.setPixelColor(${i}, Black);\n`;
     });
     res += "    strip.show();\n";
     return res;
   }
-  
-  function genFn(){
-    return(
-  `
+
+  function genFn() {
+    return `
 uint8_t t = 0;
 void testPatternSquare() {
   if(t >= ${frames.length}) t = 0;
@@ -96,13 +101,11 @@ ${genResets()}
   }
   t++;
 }
-  `
-    );
+  `;
   }
-  
-  return (arduinoProgramFileAdditionToTop+"\n"+genFn());
-};
 
+  return `${arduinoProgramFileAdditionToTop}\n${genFn()}`;
+};
 
 /*
 
