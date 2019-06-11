@@ -10,8 +10,10 @@ const mainCtx = mainContextDom.getContext("2d");
 const miniContextDom = document.getElementById("mini");
 const miniCtx = miniContextDom.getContext("2d");
 
-const WIDTH = 6;
-const HEIGHT = 6;
+const urlParams = new URLSearchParams(window.location.search);
+
+const WIDTH = +(urlParams.get("width") || 6);
+const HEIGHT = +(urlParams.get("height") || 6);
 
 mainContextDom.width = WIDTH;
 mainContextDom.height = HEIGHT;
@@ -107,7 +109,7 @@ document.getElementById("main").addEventListener("click", doClicked);
 document.body.addEventListener("contextmenu", doClicked);
 document.getElementById("main").addEventListener("touchdown", t => {Array.from(t.changedTouches).forEach(e => doClicked(e));});
 document.getElementById("main").addEventListener("touchmove", t => {Array.from(t.changedTouches).forEach(e => doClicked(e));});
-document.getElementById("main").addEventListener("mousedown", e => {doClicked(e); mouseButtonPressed = e.button});
+document.getElementById("main").addEventListener("mousedown", e => {doClicked(e); mouseButtonPressed = e.button;});
 
 document.getElementById("main").addEventListener("mousemove", e => {
   if(mouseButtonPressed > -1) doClicked(e);
@@ -263,6 +265,31 @@ function playS(){
     document.getElementById("play").innerText = "Play";
   }
 }
+document.getElementById("aspect").addEventListener("click", () => {
+  mainContextDom.classList.toggle("fullwidth");
+  document.getElementById("aspect").innerText = mainContextDom.classList.contains("fullwidth") ? "Square Mode" : "Rectangle Mode";
+});
+document.getElementById("resize").addEventListener("click", () => {
+  let sure = window.confirm("Resize will delete your animation. OK = Delete animation and resize, Cancel = Continue working");
+  if(!sure) return;
+  let wh = window.prompt("width x height");
+  let w = 6;
+  let h = 6;
+  if(wh.indexOf(",") > -1){
+    w = +(wh.split(",")[0].trim());
+    h = +(wh.split(",")[1].trim());
+  }else
+  if(wh.indexOf("x") > -1){
+    w = +(wh.split("x")[0].trim());
+    h = +(wh.split("x")[1].trim());
+  }else{
+    w = +(wh);
+    h = +window.prompt("height");
+  }
+  urlParams.set("width", w);
+  urlParams.set("height", h);
+  window.location.href = `${window.location.pathname  }?${  urlParams.toString()}`;
+});
 function play(frame){
   playing = true;
   if(pause){pause = false; playing = false; return;}
