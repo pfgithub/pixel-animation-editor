@@ -1,6 +1,6 @@
 "use strict";
-// canvas
 /* global document, window, arduinoExporter, v5Export */
+// canvas
 Object.defineProperty(exports, "__esModule", { value: true });
 const frames = [];
 let currentFrame = -1;
@@ -11,6 +11,7 @@ const miniCtx = miniContextDom.getContext("2d");
 const urlParams = new URLSearchParams(window.location.search);
 const WIDTH = +(urlParams.get("width") || 6);
 const HEIGHT = +(urlParams.get("height") || 6);
+let newFrameOnDrag = false;
 mainContextDom.width = WIDTH;
 mainContextDom.height = HEIGHT;
 const id = mainCtx.createImageData(1, 1); // only do this once per page
@@ -57,8 +58,8 @@ function copyFrame() {
 }
 insertFrame();
 function clickHandle(elid, handler) {
-    const el = getElement(elid, HTMLElement);
-    el.addEventListener("click", handler);
+    const el = getElement(elid, HTMLButtonElement);
+    el.addEventListener("click", () => handler(el));
 }
 function getElement(elid, type) {
     const el = document.getElementById(elid);
@@ -97,6 +98,8 @@ clickHandle("right", () => {
     renderFrame();
 });
 clickHandle("export", () => done());
+let prevPixelPosX;
+let prevPixelPosY;
 function doClicked(e) {
     if (e instanceof MouseEvent) {
         if (e.preventDefault) {
@@ -109,7 +112,18 @@ function doClicked(e) {
             e.stopPropagation();
         }
     }
-    fillPixel((e instanceof MouseEvent ? e.button || -1 : -1) > 1 ? false : drawerase, Math.floor(e.clientX / (mainContextDom.clientWidth / WIDTH)), Math.floor(e.clientY / (mainContextDom.clientHeight / HEIGHT)));
+    const pixelPosX = Math.floor(e.clientX / (mainContextDom.clientWidth / WIDTH));
+    const pixelPosY = Math.floor(e.clientY / (mainContextDom.clientHeight / HEIGHT));
+    if (newFrameOnDrag) {
+        if (prevPixelPosX !== undefined && prevPixelPosY !== undefined) {
+            if (pixelPosX !== prevPixelPosX || pixelPosY !== prevPixelPosY) {
+                insertFrame();
+            }
+        }
+    }
+    fillPixel((e instanceof MouseEvent ? e.button || -1 : -1) > 1 ? false : drawerase, pixelPosX, pixelPosY);
+    prevPixelPosX = pixelPosX;
+    prevPixelPosY = pixelPosY;
     return false;
 }
 let mouseButtonPressed = -1;
@@ -131,6 +145,9 @@ mainContextDom.addEventListener("mousemove", e => {
     }
 });
 mainContextDom.addEventListener("mouseup", () => {
+    mouseButtonPressed = -1;
+});
+mainContextDom.addEventListener("mouseout", () => {
     mouseButtonPressed = -1;
 });
 document.addEventListener("blur", () => {
@@ -267,6 +284,15 @@ function doneTextDnl() {
     download(`${window.prompt("Filename?")}.txt.cpp`, arduinoExporter(resarr));
     download("", arduinoExporter(resarr), true);
 }
+clickHandle("dragmode", button => {
+    newFrameOnDrag = !newFrameOnDrag;
+    if (newFrameOnDrag) {
+        button.innerText = "[X] New Frame on Drag";
+    }
+    else {
+        button.innerText = "[ ] New Frame on Drag";
+    }
+});
 let pause = false;
 let playing = false;
 clickHandle("play", () => playS());
