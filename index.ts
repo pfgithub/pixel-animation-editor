@@ -18,7 +18,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const WIDTH = +(urlParams.get("width") || 6);
 const HEIGHT = +(urlParams.get("height") || 6);
 
-let newFrameOnDrag: boolean = false;
+let newFrameOnDrag: boolean = true;
 
 mainContextDom.width = WIDTH;
 mainContextDom.height = HEIGHT;
