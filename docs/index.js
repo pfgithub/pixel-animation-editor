@@ -125,7 +125,8 @@ function doClicked(e) {
     }
     const pixelPosX = Math.floor(e.clientX / (mainContextDom.clientWidth / WIDTH));
     const pixelPosY = Math.floor(e.clientY / (mainContextDom.clientHeight / HEIGHT));
-    const erasemode = (e instanceof MouseEvent ? e.button || -1 : -1) > 1 ? false : drawerase;
+    console.log(e);
+    const erasemode = (e instanceof MouseEvent ? e.buttons || -1 : -1) > 1 ? false : drawerase;
     if (newFrameOnDrag) {
         if (prevPixelPosX !== undefined && prevPixelPosY !== undefined) {
             if (pixelPosX !== prevPixelPosX || pixelPosY !== prevPixelPosY) {
@@ -134,7 +135,6 @@ function doClicked(e) {
                     sizefill(erasemode, x, y);
                 });
                 pixelTrail.push({ x: pixelPosX, y: pixelPosY });
-                console.log(pixelTrail.length, pixelTrailLength);
                 while (pixelTrail.length >= pixelTrailLength()) {
                     pixelTrail.shift();
                 }
