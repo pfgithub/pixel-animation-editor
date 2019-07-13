@@ -100,6 +100,8 @@ clickHandle("right", () => {
 clickHandle("export", () => done());
 let prevPixelPosX;
 let prevPixelPosY;
+let pixelTrail = [];
+const pixelTrailLength = () => getElement("nfodtail", HTMLInputElement).valueAsNumber;
 function doClicked(e) {
     if (e instanceof MouseEvent) {
         if (e.preventDefault) {
@@ -118,6 +120,16 @@ function doClicked(e) {
         if (prevPixelPosX !== undefined && prevPixelPosY !== undefined) {
             if (pixelPosX !== prevPixelPosX || pixelPosY !== prevPixelPosY) {
                 insertFrame();
+                pixelTrail.forEach(({ x, y }) => {
+                    fillPixel((e instanceof MouseEvent ? e.button || -1 : -1) > 1
+                        ? false
+                        : drawerase, x, y);
+                });
+                pixelTrail.push({ x: pixelPosX, y: pixelPosY });
+                console.log(pixelTrail.length, pixelTrailLength);
+                while (pixelTrail.length >= pixelTrailLength()) {
+                    pixelTrail.shift();
+                }
             }
         }
     }
@@ -287,6 +299,7 @@ function doneTextDnl() {
 clickHandle("dragmode", button => {
     newFrameOnDrag = !newFrameOnDrag;
     if (newFrameOnDrag) {
+        pixelTrail = [];
         button.innerText = "[X] New Frame on Drag";
     }
     else {

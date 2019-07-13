@@ -35,11 +35,8 @@
         position: fixed;
         top: 0;
         left: 0;
-      }
-
-      button,
-      span {
-        float: left;
+        display: flex;
+        flex-wrap: wrap;
       }
 
       .fullwidth {
@@ -80,9 +77,17 @@
       <button id="exportTextDnl">download v3.cpp</button>
       <button id="exportv5" hotkey="KeyC">copy v5 full</button>
       <button id="resize" hotkey="">Resize</button>
+      <button id="dragmode" hotkey="KeyN">[ ] New Frame on Drag</button>
+      <input
+        type="number"
+        placeholder="NFOD Tail"
+        value="1"
+        min="1"
+        max="100"
+        id="nfodtail"
+      />
       <button id="aspect" hotkey="">Square Mode</button>
       <button id="play" hotkey="Enter">Play</button>
-      <button id="dragmode" hotkey="KeyN">[ ] New Frame on Drag</button>
       <input
         type="number"
         placeholder="Play Speed"
