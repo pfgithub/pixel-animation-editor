@@ -78,6 +78,7 @@
       <button id="exportv5" hotkey="KeyC">copy v5 full</button>
       <button id="resize" hotkey="">Resize</button>
       <button id="dragmode" hotkey="KeyN">[ ] New Frame on Drag</button>
+      <span>pen trail</span>
       <input
         type="number"
         placeholder="NFOD Tail"
@@ -86,13 +87,23 @@
         max="100"
         id="nfodtail"
       />
-      <button id="aspect" hotkey="">Square Mode</button>
+      <button id="aspect" hotkey="">1:1 Mode</button>
       <button id="play" hotkey="Enter">Play</button>
+      <span>play speed</span>
       <input
         type="number"
         placeholder="Play Speed"
         value="100"
         id="playSpeed"
+      />
+      <span>pen size</span>
+      <input
+        type="number"
+        placeholder="Pen Width"
+        value="1"
+        min="1"
+        max="100"
+        id="penwidth"
       />
     </div>
     <script type="text/javascript" src="arduinofile.cpp.js"></script>

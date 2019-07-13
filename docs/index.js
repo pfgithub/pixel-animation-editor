@@ -102,6 +102,15 @@ let prevPixelPosX;
 let prevPixelPosY;
 let pixelTrail = [];
 const pixelTrailLength = () => getElement("nfodtail", HTMLInputElement).valueAsNumber;
+const sizeLength = () => getElement("penwidth", HTMLInputElement).valueAsNumber;
+function sizefill(erasemode, x, y) {
+    const size = sizeLength();
+    for (let n = Math.floor(x - (size - 1) / 2); n <= Math.floor(x + (size - 1) / 2); n++) {
+        for (let n2 = Math.floor(y - (size - 1) / 2); n2 <= Math.floor(y + (size - 1) / 2); n2++) {
+            fillPixel(erasemode, n, n2);
+        }
+    }
+}
 function doClicked(e) {
     if (e instanceof MouseEvent) {
         if (e.preventDefault) {
@@ -116,14 +125,13 @@ function doClicked(e) {
     }
     const pixelPosX = Math.floor(e.clientX / (mainContextDom.clientWidth / WIDTH));
     const pixelPosY = Math.floor(e.clientY / (mainContextDom.clientHeight / HEIGHT));
+    const erasemode = (e instanceof MouseEvent ? e.button || -1 : -1) > 1 ? false : drawerase;
     if (newFrameOnDrag) {
         if (prevPixelPosX !== undefined && prevPixelPosY !== undefined) {
             if (pixelPosX !== prevPixelPosX || pixelPosY !== prevPixelPosY) {
                 insertFrame();
                 pixelTrail.forEach(({ x, y }) => {
-                    fillPixel((e instanceof MouseEvent ? e.button || -1 : -1) > 1
-                        ? false
-                        : drawerase, x, y);
+                    sizefill(erasemode, x, y);
                 });
                 pixelTrail.push({ x: pixelPosX, y: pixelPosY });
                 console.log(pixelTrail.length, pixelTrailLength);
@@ -131,9 +139,12 @@ function doClicked(e) {
                     pixelTrail.shift();
                 }
             }
+            else {
+                return;
+            }
         }
     }
-    fillPixel((e instanceof MouseEvent ? e.button || -1 : -1) > 1 ? false : drawerase, pixelPosX, pixelPosY);
+    sizefill(erasemode, pixelPosX, pixelPosY);
     prevPixelPosX = pixelPosX;
     prevPixelPosY = pixelPosY;
     return false;
@@ -323,8 +334,8 @@ function playS() {
 clickHandle("aspect", () => {
     mainContextDom.classList.toggle("fullwidth");
     getElement("aspect", HTMLButtonElement).innerText = mainContextDom.classList.contains("fullwidth")
-        ? "Square Mode"
-        : "Rectangle Mode";
+        ? "1:1 Mode"
+        : "Stretched Mode";
 });
 clickHandle("resize", () => {
     const sure = window.confirm("Resize will delete your animation. OK = Delete animation and resize, Cancel = Continue working");
